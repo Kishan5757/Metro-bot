@@ -17,7 +17,9 @@ export const METRO_LINES = [
     stationCount: 37,
     firstTrain: '05:00 AM',
     lastTrain: '11:00 PM',
-    description: 'East-West corridor via MG Road, Majestic & Kengeri'
+    status: 'OPERATIONAL',
+    phase: 'Phase 1 & 2',
+    description: 'East-West operational corridor via MG Road, Majestic & Kengeri'
   },
   {
     id: 'green',
@@ -31,7 +33,9 @@ export const METRO_LINES = [
     stationCount: 32,
     firstTrain: '05:00 AM',
     lastTrain: '11:00 PM',
-    description: 'North-South corridor via Yeshwanthpur, Majestic & Jayanagar'
+    status: 'OPERATIONAL',
+    phase: 'Phase 1 & 2',
+    description: 'North-South operational corridor via Yeshwanthpur, Majestic & Jayanagar'
   },
   {
     id: 'yellow',
@@ -45,15 +49,81 @@ export const METRO_LINES = [
     stationCount: 16,
     firstTrain: '06:00 AM',
     lastTrain: '11:55 PM',
+    status: 'OPERATIONAL',
+    phase: 'Phase 2',
     description: 'Electronic City IT corridor via Silk Board & BTM Layout'
+  },
+  {
+    id: 'pink',
+    name: 'Pink Line',
+    short: 'PINK',
+    color: '#ec4899',
+    dark: '#be185d',
+    bgClass: 'bg-pink-500/10 text-pink-300 border-pink-500/40',
+    route: 'Kalena Agrahara ↔ Nagawara',
+    length: 21.25,
+    stationCount: 18,
+    firstTrain: 'Target 2026',
+    lastTrain: 'Target 2026',
+    status: 'UNDER_CONSTRUCTION',
+    phase: 'Phase 2',
+    description: 'Under Construction • Bannerghatta Road to Nagawara via Jayadeva, MG Road & Shivajinagar'
+  },
+  {
+    id: 'blue',
+    name: 'Blue Line (Airport)',
+    short: 'BLUE',
+    color: '#3b82f6',
+    dark: '#1d4ed8',
+    bgClass: 'bg-blue-500/10 text-blue-300 border-blue-500/40',
+    route: 'Central Silk Board ↔ KIAL Terminals 1 & 2',
+    length: 58.19,
+    stationCount: 30,
+    firstTrain: 'Target 2026-27',
+    lastTrain: 'Target 2026-27',
+    status: 'UNDER_CONSTRUCTION',
+    phase: 'Phase 2A & 2B',
+    description: 'Under Construction • Outer Ring Road IT corridor (Silk Board to KR Puram) & Airport Express'
+  },
+  {
+    id: 'orange',
+    name: 'Orange Line',
+    short: 'ORANGE',
+    color: '#f97316',
+    dark: '#c2410c',
+    bgClass: 'bg-orange-500/10 text-orange-300 border-orange-500/40',
+    route: 'JP Nagar 4th Phase ↔ Kempapura & Hosahalli ↔ Kadabagere',
+    length: 44.65,
+    stationCount: 31,
+    firstTrain: 'Target 2028',
+    lastTrain: 'Target 2028',
+    status: 'UNDER_CONSTRUCTION',
+    phase: 'Phase 3',
+    description: 'Under Construction • Western Outer Ring Road arc & Magadi Road Corridor'
+  },
+  {
+    id: 'red',
+    name: 'Red Line',
+    short: 'RED',
+    color: '#ef4444',
+    dark: '#b91c1c',
+    bgClass: 'bg-rose-500/10 text-rose-300 border-rose-500/40',
+    route: 'Hebbal ↔ Sarjapur',
+    length: 37.0,
+    stationCount: 28,
+    firstTrain: 'Target 2029-30',
+    lastTrain: 'Target 2029-30',
+    status: 'UNDER_CONSTRUCTION',
+    phase: 'Phase 3A',
+    description: 'Under Construction / Proposed • Sarjapur IT corridor to Hebbal via Koramangala & Agara'
   }
 ];
 
 export const LINE_BY_ID = Object.fromEntries(METRO_LINES.map(l => [l.id, l]));
 
 // ---- Station definitions per line ------------------------------------
-// dist = distance in km from the line's western/southern origin
-// x / y = schematic map coordinates (viewBox 0 0 1280 1400)
+// dist = distance in km from the origin
+// x / y = schematic map coordinates (viewBox 0 0 1280 1420)
 
 const LINE_DEFS = {
   purple: {
@@ -109,12 +179,75 @@ const LINE_DEFS = {
     ],
     x: [496, 544, 592, 640, 688, 736, 784, 832, 880, 928, 976, 1024, 1072, 1120, 1168, 1216],
     y: [670, 718, 766, 814, 862, 910, 958, 1006, 1054, 1102, 1150, 1198, 1246, 1294, 1342, 1390]
+  },
+  pink: {
+    names: [
+      'Kalena Agrahara', 'Hulimavu', 'IIMB', 'JP Nagar 4th Phase', 'Jayadeva Hospital',
+      'Tavarekere', 'Dairy Circle', 'Lakkasandra', 'Langford Town', 'National Military School',
+      'MG Road', 'Shivajinagar', 'Cantonment', 'Pottery Town', 'Tannery Road',
+      'Venkateshpura', 'Kadugondanahalli', 'Nagawara'
+    ],
+    dist: [
+      0, 1.3, 2.5, 3.8, 5.0, 6.2, 7.5, 8.8, 10.0, 11.3,
+      12.5, 13.8, 15.0, 16.2, 17.5, 18.8, 20.0, 21.25
+    ],
+    x: [620, 620, 620, 606, 592, 620, 620, 632, 632, 632, 632, 632, 632, 632, 632, 632, 632, 632],
+    y: [1100, 1020, 940, 840, 766, 700, 640, 580, 530, 495, 460, 390, 330, 280, 240, 200, 170, 150]
+  },
+  blue: {
+    names: [
+      'Central Silk Board', 'HSR Layout', 'Agara', 'Ibbalur', 'Bellandur',
+      'Kadubeesanahalli', 'Kodibeesanahalli', 'Marathahalli', 'ISRO', 'Doddanekkundi',
+      'DRDO Sports Complex', 'Sarasvathi Nagar', 'Krishnarajapura', 'Kasturi Nagar', 'Horamavu',
+      'HRBR Layout', 'Kalyan Nagar', 'HBR Layout', 'Nagawara', 'Veerannapalya',
+      'Kempapura', 'Hebbal', 'Kodigehalli', 'Jakkur Cross', 'Yelahanka',
+      'Bagalur Cross', 'Hardware Park', 'Airport City', 'KIAL Terminal 1', 'KIAL Terminal 2'
+    ],
+    dist: [
+      0, 1.8, 3.5, 5.2, 7.0, 8.9, 10.5, 12.3, 14.1, 16.0,
+      17.8, 19.5, 21.4, 23.5, 25.8, 28.0, 30.2, 32.5, 35.0, 37.5,
+      40.0, 42.5, 45.0, 48.0, 51.0, 53.5, 55.5, 56.5, 57.5, 58.19
+    ],
+    x: [
+      688, 740, 800, 860, 920, 960, 990, 1020, 1000, 960,
+      920, 890, 870, 820, 770, 720, 680, 650, 632, 530,
+      450, 420, 420, 420, 420, 420, 420, 420, 420, 420
+    ],
+    y: [
+      862, 830, 800, 770, 740, 710, 670, 620, 570, 530,
+      500, 480, 460, 390, 330, 270, 220, 180, 150, 150,
+      150, 150, 120, 95, 70, 50, 35, 25, 15, 5
+    ]
+  },
+  orange: {
+    names: [
+      'JP Nagar 4th Phase', 'JP Nagar 5th Phase', 'Kamakhya Bus Depot', 'PES University',
+      'Mysuru Road', 'Nagarbhavi Circle', 'Sumanahalli Cross', 'Hosahalli', 'Kuvempu Nagar',
+      'Goraguntepalya', 'BEL Circle', 'Kempapura', 'Kadabagere'
+    ],
+    dist: [
+      0, 2.5, 5.0, 8.0, 11.2, 14.5, 18.0, 21.5, 25.0, 29.0, 33.0, 38.0, 44.65
+    ],
+    x: [606, 540, 440, 340, 258, 240, 280, 360, 410, 496, 460, 450, 120],
+    y: [840, 840, 760, 660, 460, 380, 320, 460, 360, 234, 180, 150, 400]
+  },
+  red: {
+    names: [
+      'Sarjapur', 'Carmelaram', 'Agara', 'Koramangala 3rd Block', 'Dairy Circle',
+      'National Military School', 'Cantonment', 'Hebbal'
+    ],
+    dist: [
+      0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 37.0
+    ],
+    x: [1150, 1000, 800, 720, 620, 632, 632, 420],
+    y: [1000, 900, 800, 720, 640, 495, 330, 150]
   }
 };
 
 export const METRO_STATIONS = [];
 for (const line of Object.keys(LINE_DEFS)) {
   const cfg = LINE_DEFS[line];
+  const lineObj = LINE_BY_ID[line];
   cfg.names.forEach((name, i) => {
     const x = cfg.x ? cfg.x[i] : cfg.xBase + i * cfg.xStep;
     const y = cfg.y ? cfg.y[i] : cfg.yFixed;
@@ -122,6 +255,7 @@ for (const line of Object.keys(LINE_DEFS)) {
       id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       name,
       line,
+      status: lineObj ? lineObj.status : 'OPERATIONAL',
       dist: cfg.dist[i],
       x,
       y
@@ -410,11 +544,11 @@ export const ROUTE_DESTINATIONS = [
   { id: 'kengeri', name: 'Kengeri' },
   { id: 'krpuram', name: 'Krishnarajapura' },
   { id: 'jayanagar', name: 'Jayanagar' },
-  { id: 'banashankari', name: 'Banashankari' },
-  { id: 'btm-layout', name: 'BTM Layout' },
-  { id: 'rajajinagar', name: 'Rajajinagar' },
   { id: 'yeshwanthpur', name: 'Yeshwanthpur' },
-  { id: 'chickpete', name: 'Chickpete' }
+  { id: 'airport-terminal', name: 'KIAL Terminal 1', underConstruction: true },
+  { id: 'nagawara', name: 'Nagawara', underConstruction: true },
+  { id: 'hebbal', name: 'Hebbal', underConstruction: true },
+  { id: 'kalena-agrahara', name: 'Kalena Agrahara', underConstruction: true }
 ];
 
 // ---- Suggested canvas intents ----

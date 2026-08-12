@@ -176,72 +176,109 @@ export default function RouteFlowchart({ initialFrom, initialTo, mode = 'full' }
             </motion.div>
           )}
 
-          {/* === ROUTE FLOWCHART (pathway) === */}
+          {/* === ROUTE FLOWCHART (Complete All-Stops Pathway) === */}
           {(mode === 'route' || mode === 'full') && (
             <>
               <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 rounded-2xl bg-slate-900/70 border border-white/10 text-xs font-mono">
                 <span className="flex items-center gap-2 text-slate-300">
                   <Route className="w-4 h-4 text-cyan-400" />
-                  <span>PATHWAY: <span className="font-bold text-slate-100">{route.from}</span> → <span className="font-bold text-slate-100">{route.to}</span></span>
+                  <span>PATHWAY ({route.allStops ? route.allStops.length - 1 : route.stops} STOPS): <span className="font-bold text-slate-100">{route.from}</span> → <span className="font-bold text-slate-100">{route.to}</span></span>
                 </span>
                 <span className="flex items-center gap-2 text-slate-400">
                   <GitBranch className="w-3.5 h-3.5 text-amber-400" />
-                  {route.transfers === 0 ? 'DIRECT' : `${route.transfers} TRANSFER${route.transfers > 1 ? 'S' : ''}`}
+                  {route.transfers === 0 ? 'DIRECT SERVICE' : `${route.transfers} INTERCHANGE${route.transfers > 1 ? 'S' : ''}`}
                 </span>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-900/80 border border-purple-500/25 overflow-x-auto">
-                <div className="flex flex-col items-center gap-0.5 min-w-max mx-auto">
-                  {/* Origin node */}
-                  <FlowNode
-                    label={route.from}
-                    sub="Boarding station"
-                    color="#10b981"
-                    icon={MapPin}
-                    isEnd={route.stops === 0}
-                  />
+              {/* Complete Step-by-Step Station Timeline Flowchart */}
+              <div className="p-5 rounded-2xl bg-slate-900/80 border border-purple-500/25 max-h-[460px] overflow-y-auto no-scrollbar space-y-1">
+                <div className="flex flex-col items-center gap-1 min-w-max mx-auto py-2">
+                  {route.allStops && route.allStops.length > 0 ? (
+                    route.allStops.map((stop, idx) => {
+                      const line = LINE_BY_ID[stop.line] || LINE_BY_ID.purple;
+                      const isFirst = idx === 0;
+                      const isLast = idx === route.allStops.length - 1;
 
-                  {route.segments.map((seg, si) => {
-                    const line = LINE_BY_ID[seg.line];
-                    const isLast = si === route.segments.length - 1;
-                    return (
-                      <React.Fragment key={si}>
-                        {/* Line segment node */}
-                        <div className="flex items-center gap-2 py-1">
+                      return (
+                        <div key={idx} className="flex flex-col items-center">
+                          {/* Station node card */}
                           <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: si * 0.15 }}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-full border"
-                            style={{ color: line.color, borderColor: `${line.color}55`, backgroundColor: `${line.color}12` }}
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: idx * 0.04 }}
+                            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl border min-w-[280px] sm:min-w-[340px] max-w-md ${
+                              isFirst
+                                ? 'bg-emerald-500/15 border-emerald-500/50 shadow-lg shadow-emerald-500/10'
+                                : isLast
+                                ? 'bg-purple-500/15 border-purple-500/50 shadow-lg shadow-purple-500/10'
+                                : stop.isTransfer
+                                ? 'bg-amber-500/15 border-amber-500/50 shadow-lg shadow-amber-500/10'
+                                : 'bg-slate-900/90 border-white/10'
+                            }`}
                           >
-                            <Train className="w-3.5 h-3.5" />
-                            <span className="text-[11px] font-mono font-bold">{line.name}</span>
-                            <span className="text-[10px] font-mono opacity-80">{seg.km} km</span>
-                          </motion.div>
-                        </div>
+                            {/* Stop Index Badge */}
+                            <span
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold shrink-0 text-slate-950"
+                              style={{ backgroundColor: line.color }}
+                            >
+                              {isFirst ? 'START' : isLast ? 'END' : idx}
+                            </span>
 
-                        {/* Transfer / Destination node */}
-                        {isLast ? (
-                          <FlowNode
-                            label={seg.stations[seg.stations.length - 1]}
-                            sub={`Alight • ${line.name}`}
-                            color={line.color}
-                            icon={MapPin}
-                            isEnd
-                          />
-                        ) : (
-                          <FlowNode
-                            label={seg.stations[seg.stations.length - 1]}
-                            sub={`Transfer → ${LINE_BY_ID[route.segments[si + 1].line].short}`}
-                            color="#f5b81e"
-                            icon={Repeat}
-                            isTransfer
-                          />
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
+                            {/* Station Details */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="text-xs font-bold text-slate-100 truncate">{stop.name}</span>
+                                {isFirst && (
+                                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                                    BOARD
+                                  </span>
+                                )}
+                                {isLast && (
+                                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                                    ALIGHT
+                                  </span>
+                                )}
+                                {stop.isTransfer && !isLast && (
+                                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                    TRANSFER
+                                  </span>
+                                )}
+                              </div>
+
+                              <div className="flex items-center gap-2 text-[10px] font-mono text-slate-400 mt-0.5">
+                                <span style={{ color: line.color }} className="font-bold">{line.name}</span>
+                                <span>•</span>
+                                <span>{stop.distFromStart} km</span>
+                              </div>
+                            </div>
+                          </motion.div>
+
+                          {/* Connecting arrow line to next stop */}
+                          {!isLast && (
+                            <div className="flex flex-col items-center py-1">
+                              <motion.div
+                                animate={{ height: [8, 16, 8] }}
+                                transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                                className="w-0.5 bg-slate-700 rounded-full"
+                                style={{ backgroundColor: `${line.color}aa` }}
+                              />
+                              <ArrowDown className="w-3.5 h-3.5 -mt-1" style={{ color: line.color }} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    /* Fallback to segments */
+                    route.segments.map((seg, si) => {
+                      const line = LINE_BY_ID[seg.line];
+                      return (
+                        <div key={si} className="text-xs text-slate-300 font-mono">
+                          {line.name} ({seg.km} km)
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </>

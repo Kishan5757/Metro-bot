@@ -50,41 +50,21 @@ export default function CommandRing({ onExecuteQuery, activeCategory, soundEnabl
     if (!inputText.trim()) return;
     hudAudio.playClick();
 
-    const routeQuery = buildRouteQuery(inputText);
-    if (routeQuery) {
-      onExecuteQuery(routeQuery);
-    } else {
-      onExecuteQuery({
-        id: 'custom-' + Date.now(),
-        title: inputText,
-        subtitle: 'Custom Namma Metro query',
-        category: detectCategory(inputText),
-        intent: 'CUSTOM',
-        customText: inputText
-      });
-    }
+    const queryResult = buildRouteQuery(inputText);
+    onExecuteQuery(queryResult);
     setInputText('');
     setSuggestions([]);
-  };
-
-  const detectCategory = (text) => {
-    const lower = text.toLowerCase();
-    if (lower.includes('facility') || lower.includes('elevator') || lower.includes('restroom') || lower.includes('parking')) return 'facility';
-    if (lower.includes('gate') || lower.includes('exit') || lower.includes('bus') || lower.includes('railway')) return 'gates';
-    if (lower.includes('fare') || lower.includes('route') || lower.includes('cost') || lower.includes('ticket') || lower.includes('path')) return 'hologram';
-    if (lower.includes('timing') || lower.includes('schedule') || lower.includes('delay') || lower.includes('train')) return 'timings';
-    if (lower.includes('network') || lower.includes('map') || lower.includes('line')) return 'network';
-    return 'orbital';
   };
 
   const handleVoiceSimulate = () => {
     hudAudio.playPulseSound();
     setIsListening(true);
     const phrases = [
-      "Show the Namma Metro network map",
+      "How are you?",
+      "What lines are under construction?",
       "What is the fare from Majestic to Whitefield",
+      "Tell me about Pink Line",
       "Route from Indiranagar to Electronic City",
-      "How long is the journey to Silk Institute",
       "Show live platform timings at Majestic"
     ];
     const chosen = phrases[Math.floor(Math.random() * phrases.length)];
@@ -99,19 +79,8 @@ export default function CommandRing({ onExecuteQuery, activeCategory, soundEnabl
         setTimeout(() => {
           setIsListening(false);
           hudAudio.playSuccess();
-          const routeQuery = buildRouteQuery(chosen);
-          if (routeQuery) {
-            onExecuteQuery(routeQuery);
-          } else {
-            onExecuteQuery({
-              id: 'voice-' + Date.now(),
-              title: chosen,
-              subtitle: 'Voice recognized metro query',
-              category: detectCategory(chosen),
-              intent: 'VOICE',
-              customText: chosen
-            });
-          }
+          const queryResult = buildRouteQuery(chosen);
+          onExecuteQuery(queryResult);
           setInputText('');
         }, 500);
       }

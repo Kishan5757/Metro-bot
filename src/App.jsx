@@ -192,7 +192,7 @@ export default function App() {
             >
               {/* Node 0: Full Width Namma Metro Network Map */}
               <div className={`lg:col-span-2 ${activeCategory === 'network' ? 'ring-2 ring-cyan-500/50 rounded-3xl' : ''}`}>
-                <MetroNetworkMapNode />
+                <MetroNetworkMapNode onSelectMapRoute={handleExecuteQuery} />
               </div>
 
               {/* Node 1: Orbital Station Overview */}
@@ -229,7 +229,7 @@ export default function App() {
               exit={{ opacity: 0, scale: 0.98 }}
               className="max-w-4xl mx-auto space-y-6"
             >
-              {activeCategory === 'network' && <MetroNetworkMapNode />}
+              {activeCategory === 'network' && <MetroNetworkMapNode onSelectMapRoute={handleExecuteQuery} />}
               {activeCategory === 'orbital' && <OrbitalStationNode platforms={platforms} />}
               {activeCategory === 'timings' && <PlatformTrackerNode platforms={platforms} onSimulateDelay={handleSimulateDelay} />}
               {activeCategory === 'facility' && <FacilityMatrixNode />}

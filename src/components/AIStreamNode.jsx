@@ -57,25 +57,42 @@ export default function AIStreamNode({ activeQuery, onExecuteChip }) {
         />
       ) : (
         <>
-          {/* Structured synthesis — metro-focused facts only */}
-          <div className="text-xs text-slate-200 leading-relaxed font-sans space-y-2">
+          {/* Structured synthesis — conversational AI response & metro facts */}
+          <div className="text-xs text-slate-200 leading-relaxed font-sans space-y-3">
             <p className="font-medium text-slate-300">
               {activeQuery.subtitle || 'Synthesizing BMRCL transit streams and station telemetry for instant decision support.'}
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 text-[11px] font-mono">
-              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2 text-purple-300">
-                <Bot className="w-3.5 h-3.5 shrink-0" />
-                <span>3 Lines • 96.1 km Network</span>
+            {activeQuery.answerText && (
+              <div className="p-4 rounded-2xl bg-white/5 border border-cyan-500/20 text-slate-200 text-xs sm:text-sm font-sans space-y-2 whitespace-pre-wrap leading-relaxed shadow-inner">
+                {activeQuery.answerText}
               </div>
-              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2 text-cyan-400">
-                <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                <span>Fares ₹11 – ₹95 (2026)</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2 text-emerald-400">
-                <MapPin className="w-3.5 h-3.5 shrink-0" />
-                <span>83 Operational Stations</span>
-              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px] font-mono">
+              {activeQuery.metrics ? (
+                activeQuery.metrics.map((m, idx) => (
+                  <div key={idx} className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex flex-col gap-0.5 text-cyan-300">
+                    <span className="text-[9px] text-slate-400 font-mono uppercase tracking-wider">{m.label}</span>
+                    <span className="font-bold text-slate-100">{m.value}</span>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2 text-emerald-400">
+                    <Bot className="w-3.5 h-3.5 shrink-0" />
+                    <span>3 Operational • 4 Under Const.</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2 text-cyan-400">
+                    <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                    <span>Fares ₹11 – ₹95 (2026)</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2 text-purple-300">
+                    <MapPin className="w-3.5 h-3.5 shrink-0" />
+                    <span>257.4 km Total Network</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </>

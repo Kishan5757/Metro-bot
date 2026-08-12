@@ -103,7 +103,9 @@ export default function RouteHologramNode() {
               >
                 <div className="font-bold truncate">{st.name}</div>
                 <div className="text-[10px] text-slate-400 mt-1">
-                  {stRoute ? `${stRoute.totalKm} km • ₹${stRoute.fare}` : '—'}
+                  {st.underConstruction || stRoute?.isUnderConstruction
+                    ? '🚧 UNDER CONST.'
+                    : (stRoute ? `${stRoute.totalKm} km • ₹${stRoute.fare}` : '—')}
                 </div>
               </motion.button>
             );
